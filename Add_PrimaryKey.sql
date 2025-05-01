@@ -1,0 +1,17 @@
+USE test;
+
+DESCRIBE addresses;
+
+ALTER TABLE addresses
+ADD PRIMARY KEY(id);
+
+ALTER TABLE addresses
+DROP PRIMARY KEY;
+
+ALTER TABLE addresses
+MODIFY id INT;
+
+DESCRIBE people;
+
+ALTER TABLE people
+ADD PRIMARY KEY (id);

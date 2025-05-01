@@ -1,3 +1,5 @@
+-- CREATION COFEE_STORE DATABASE AND TABLES
+
 SHOW DATABASES;
 
 CREATE DATABASE coffee_store;
@@ -18,4 +20,13 @@ first_name VARCHAR(30),
 last_name VARCHAR(30),
 gender ENUM('M','F'),
 phone_number VARCHAR(11)
+);
+
+CREATE TABLE orders (
+id INT auto_increment PRIMARY KEY,
+product_id INT,
+customer_id INT,
+order_time DATETIME,
+FOREIGN KEY (product_id) REFERENCES products(id),
+FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
