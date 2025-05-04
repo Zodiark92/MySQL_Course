@@ -24,3 +24,7 @@ owner_id VARCHAR(20)
 );
 
 SHOW TABLES;
+
+DESCRIBE addresses;
+DESCRIBE people;
+DESCRIBE pets;
