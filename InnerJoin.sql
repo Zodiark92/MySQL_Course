@@ -11,3 +11,11 @@ SELECT p.name, o.order_time FROM orders o
 INNER JOIN products p ON p.id = o.product_id
 WHERE o.product_id = 5
 ORDER BY o.order_time;
+
+SELECT * FROM customers;
+
+SELECT * FROM orders;
+
+SELECT c.first_name, c.last_name, o.order_time FROM customers c
+JOIN orders o ON c.id = o.customer_id
+ORDER BY o.order_time DESC;
