@@ -1,0 +1,173 @@
+La normalizzazione in SQL è un processo essenziale per progettare database efficienti e privi di anomalie, strutturando i dati in modo da ridurre la ridondanza e migliorare l'integrità. Il concetto si basa sulla divisione di una tabella in più tabelle correlate, organizzate seguendo delle regole definite chiamate "forme normali". Approfondiamo le tre forme normali fondamentali:
+
+1. Prima Forma Normale (1NF)
+Obiettivi principali:
+
+Atomicità dei dati: Ogni campo (o attributo) deve contenere un solo valore, senza strutture dati complesse o set all'interno di una cella.
+
+Assenza di gruppi ripetuti: La struttura della tabella non deve prevedere colonne multiple per valori simili (come Telefono1, Telefono2, ecc.); eventuali dati ripetuti vanno gestiti in una tabella separata.
+
+Esempio pratico: Immagina una tabella Clienti con i campi ClienteID, Nome e Telefoni, dove il campo Telefoni possa contenere una lista di numeri. Per rispettare la 1NF, la tabella va ristrutturata in modo che ogni riga contenga un solo numero di telefono oppure, in alternativa, creare una seconda tabella Clienti_Telefoni in cui ogni riga associ ClienteID e un singolo Telefono.
+
+
+ClienteID - Telefoni
+
+Mario - 333456223, 3335678912  
+
+-> 1
+
+ClienteID - Telefoni
+
+Mario 333456223
+
+Mario 3335678912
+
+2. Seconda Forma Normale (2NF)
+Requisiti aggiuntivi:
+
+La tabella deve essere già in 1NF.
+
+Dipendenza completa dalla chiave primaria: Se la chiave primaria è composta (ovvero, formata da più attributi), ogni attributo non chiave deve dipendere da tutti i componenti della chiave. In sostanza, non devono esistere dipendenze parziali, dove un attributo non chiave dipende soltanto da una parte della chiave composta.
+
+Esempio pratico: Considera una tabella Iscrizioni con la chiave primaria composta da (StudenteID, CorsoID) e con gli attributi Nome_Corso e Data_Iscrizione. Se Nome_Corso dipende solo da CorsoID e non da StudenteID, questo genera una dipendenza parziale. La soluzione consiste nello spostare Nome_Corso in una tabella separata (per esempio, Corsi), dove CorsoID è la chiave primaria, eliminando così la ridondanza.
+
+3. Terza Forma Normale (3NF)
+Obiettivi specifici:
+
+La tabella deve essere in 2NF.
+
+Eliminazione delle dipendenze transitive: Un attributo non chiave non deve dipendere da un altro attributo non chiave. Se ciò accade, è opportuno spostare l'attributo secondario in una nuova tabella per assicurarsi che ogni attributo dipenda direttamente dalla chiave primaria.
+
+Esempio pratico: Immagina una tabella Studenti con i campi StudenteID, Nome, CorsoID e Nome_Corso. Anche se potresti aver eliminato i problemi di 1NF e 2NF, il campo Nome_Corso dipende da CorsoID e non direttamente da StudenteID. In questo caso, la normalizzazione a 3NF prevede la separazione dei dati relativi ai corsi in una tabella Corsi, dove CorsoID è la chiave primaria e Nome_Corso ne è un attributo, eliminando così la dipendenza transitiva.
+
+Oltre la 3NF e Considerazioni Finali
+Nel mondo reale, esistono forme normali ulteriori come la Boyce-Codd Normal Form (BCNF), la Quarta (4NF) e la Quinta (5NF). Queste forme avanzate si applicano in scenari particolarmente complessi dove le dipendenze funzionali o multivalore richiedono una ulteriore disgregazione dei dati. Tuttavia, nella maggior parte dei casi pratici, garantire che il database rispetti fino alla 3NF (o BCNF per una violenza maggiore dei requisiti) è sufficiente per ottenere un design robusto e gestibile.
+
+Punti chiave da ricordare:
+
+La normalizzazione aiuta a prevenire anomalie come quelle di inserimento, aggiornamento e cancellazione, poiché ogni fatto viene registrato in un solo posto.
+
+Sebbene una struttura altamente normalizzata riduca la ridondanza, potrebbe richiedere query più complesse con join multipli. Si tratta di un compromesso tra integrità dei dati e performance, che deve essere valutato in base alle esigenze specifiche dell’applicazione.
+
+L’adozione di una strategia di normalizzazione ben pianificata, con attenzione alle esigenze specifiche del tuo progetto, ti permetterà di costruire sistemi più solidi e facilmente manutenibili. Se ti interessa approfondire ulteriormente, possiamo esplorare insieme casi di studio reali, l’impatto sui join nelle query e come, in alcuni contesti, la denormalizzazione controllata possa essere una scelta strategica per migliorare le performance.
+
+Quali altri aspetti del design dei database ti incuriosiscono?
+
+Esempio 1: Gestione dei Contatti e Numeri di Telefono
+Problema iniziale: Supponiamo di avere una tabella denominata Clienti che memorizza in un’unica colonna anche più numeri di telefono:
+
+ClienteID	Nome	Telefoni
+1	Mario	345-1234567, 345-7654321
+2	Lucia	347-9876543
+Questa struttura viola la Prima Forma Normale (1NF) perché il campo Telefoni contiene dati non atomici (più valori in un’unica cella).
+
+Soluzione Normalizzata (1NF): Si creano due tabelle:
+
+Clienti: Contiene le informazioni univoche di ogni cliente.
+
+Clienti_Telefoni: Associa ogni cliente a un singolo numero di telefono in righe separate.
+
+Struttura normalizzata:
+
+Clienti:
+
+ClienteID	Nome
+1	Mario
+2	Lucia
+Clienti_Telefoni:
+
+ClienteID	Telefono
+1	345-1234567
+1	345-7654321
+2	347-9876543
+In questo modo ogni informazione (numero di telefono) è registrata in modo atomico e associata alla giusta entità.
+
+Esempio 2: Registrazione di Corsi e Iscrizioni
+Problema iniziale: Immagina una tabella Iscrizioni in cui vengono memorizzati gli studenti, i corsi a cui sono iscritti e alcune informazioni ridondanti:
+
+StudenteID	NomeStudente	CorsoID	NomeCorso	DataIscrizione
+1	Alice Rossi	CS101	Informatica	2023-09-01
+1	Alice Rossi	MATH101	Matematica	2023-09-01
+2	Marco Bianchi	CS101	Informatica	2023-09-02
+Qui, il nome dello studente e il nome del corso vengono ripetuti più volte, creando dipendenze parziali sulla chiave composta della tabella (StudenteID, CorsoID).
+
+Soluzione Normalizzata (2NF e 3NF): Si suddivide l’informazione in tre tabelle:
+
+Studenti: Memorizza l’identificativo e il nome dello studente.
+
+Corsi: Memorizza l’identificativo del corso e il relativo nome.
+
+Iscrizioni: Associa gli studenti ai corsi, registrando anche la data d’iscrizione.
+
+Struttura normalizzata:
+
+Studenti:
+
+StudenteID	NomeStudente
+1	Alice Rossi
+2	Marco Bianchi
+Corsi:
+
+CorsoID	NomeCorso
+CS101	Informatica
+MATH101	Matematica
+Iscrizioni:
+
+StudenteID	CorsoID	DataIscrizione
+1	CS101	2023-09-01
+1	MATH101	2023-09-01
+2	CS101	2023-09-02
+Così facendo, ogni attributo non chiave è direttamente dipendente dalla chiave primaria delle rispettive tabelle, eliminando ridondanze e anomalie di aggiornamento.
+
+Esempio 3: Gestione di Ordini e Dettagli d’Ordine
+Problema iniziale: Considera una tabella Ordini che registra sia i dati dell’ordine che informazioni sul cliente e sul prodotto:
+
+OrdineID	DataOrdine	ClienteID	NomeCliente	ProdottoID	NomeProdotto	Quantità	PrezzoUnitario
+1	2024-01-10	1001	Mario Rossi	P01	Scarpe	2	50.00
+1	2024-01-10	1001	Mario Rossi	P02	Calze	3	5.00
+2	2024-01-12	1002	Anna Verdi	P01	Scarpe	1	50.00
+In questo schema, i dati del cliente e del prodotto si ripetono per ogni riga, il che può portare a problemi di coerenza in caso di aggiornamenti.
+
+Soluzione Normalizzata (3NF): Si divide il database in più tabelle per isolare le entità:
+
+Clienti: Contiene ClienteID e NomeCliente.
+
+Ordini: Memorizza OrdineID, DataOrdine e ClienteID per collegare l’ordine al cliente.
+
+Prodotti: Memorizza ProdottoID, NomeProdotto e PrezzoUnitario.
+
+DettagliOrdine: Associa ogni ordine ai relativi prodotti e quantità ordinate.
+
+Struttura normalizzata:
+
+Clienti:
+
+ClienteID	NomeCliente
+1001	Mario Rossi
+1002	Anna Verdi
+Ordini:
+
+OrdineID	DataOrdine	ClienteID
+1	2024-01-10	1001
+2	2024-01-12	1002
+Prodotti:
+
+ProdottoID	NomeProdotto	PrezzoUnitario
+P01	Scarpe	50.00
+P02	Calze	5.00
+DettagliOrdine:
+
+OrdineID	ProdottoID	Quantità
+1	P01	2
+1	P02	3
+2	P01	1
+Questo schema assicura che ogni dato sia memorizzato una sola volta e che le eventuali modifiche (ad esempio, il cambio del prezzo di un prodotto) vengano effettuate in un'unica posizione, riducendo il rischio di inconsistenze.
+
+Conclusioni
+La normalizzazione è fondamentale per mantenere un database coerente e privo di anomalie (come quelle di inserimento, aggiornamento o cancellazione). Tuttavia, un’elevata normalizzazione può richiedere query con join multipli, il che in alcuni casi può influenzare le performance. Per questo, in ambiti con elevate esigenze di performance, si può prendere in considerazione una denormalizzazione controllata.
+
+Questi esempi mostrano come, a partire da un’unica tabella con dati ridondanti, si possa procedere a suddivisione in entità logiche distinte (clienti, corsi, prodotti, ecc.), migliorando sia la manutenzione del database che l’integrità dei dati.
+
+Ti interessa approfondire come implementare questi schemi in un determinato DBMS o come gestire i compromessi tra normalizzazione e performance?
+
+http://www-db.disi.unibo.it/courses/BDPG/normaliz.pdf  (reference)
