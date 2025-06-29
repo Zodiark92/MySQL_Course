@@ -434,3 +434,9 @@ SELECT * FROM films;
 
 SELECT * FROM screenings;
 
+SELECT * FROM reserved_seat;
+
+SELECT * FROM customers;
+
+SELECT * FROM bookings;
+
