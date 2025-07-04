@@ -5,11 +5,11 @@ SELECT * FROM screenings;
 
 -- 1.
 SELECT film_id, start_time FROM screenings
-WHERE date(start_time) = '2022-10-18';
+WHERE date(start_time) = '2022-06-18';
 
 SELECT f.name, s.start_time FROM screenings s
 JOIN films f ON f.id = s.film_id
-WHERE date(start_time) = '2022-10-18';
+WHERE date(start_time) = '2022-06-18';
 
 -- 2.
 SELECT * FROM screenings
